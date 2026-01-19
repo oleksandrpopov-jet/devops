@@ -22,13 +22,14 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "5678:5678"  # Optional: Expose n8n port if needed
     volumes:
       - ./caddy_data:/data
       - ./caddy_config:/config
     # 'tls internal' tells Caddy to use a self-signed cert
     command: >
       caddy reverse-proxy
-      --from $SERVER_IP
+      --from :5678
       --to n8n:5678
       --internal-certs
 
@@ -41,7 +42,7 @@ services:
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_URL=https://$SERVER_IP/
+      - WEBHOOK_URL=https://$SERVER_IP:5678/
       - GENERIC_TIMEZONE=UTC
     volumes:
       - ./n8n_data:/home/node/.n8n
@@ -50,6 +51,7 @@ EOF
 echo "Adjusting firewall..."
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
+sudo utf allow 5678/tcp
 
 echo "Starting n8n with Self-Signed TLS..."
 cd "$N8N_DIR"
