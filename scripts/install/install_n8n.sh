@@ -22,6 +22,7 @@ services:
     environment:
       - N8N_HOST=localhost
       - N8N_PORT=5678
+      - N8N_SECURE_COOKIE=false
       - N8N_PROTOCOL=http
       - NODE_ENV=production
       - WEBHOOK_URL=http://localhost:5678/
